@@ -5,6 +5,9 @@
 #include "threadfuncs.h"
 
 int main() {
+  std::thread::id a = std::this_thread::get_id();
+  std::thread::id b = std::this_thread::get_id();
+  bool same = (a == b)
   about();
 
   // Open log file
@@ -32,9 +35,9 @@ int main() {
   }
 
   // wait for stop all threads
-  /*for (auto& t : threads) {
+  for (auto& t : threads) {
     if (t.joinable()) t.join();
-  }*/
+  }
 
   // close file automatically
   std::cout << "main: all threads finished, file closed\n";
