@@ -41,21 +41,20 @@ void about() {
   std::cout << "std::thread example\n";
 }
 
-void funcThread(const ThreadArgs& args, Logger& logger) {
+void funcThread(const ThreadArgs& args, Logger& logger, std::promise<std::string> prom) {
   for (int i = 0; i < 100000; ++i) ++counter;
   for (int i = 0; i < COUNT_ITERATIONS; ++i) {
     std::ostringstream oss;
 
     oss << "[tag = " << args.tag
-        << "] pid = "  << ::getpid()
-        << " ppid = "  << ::getppid()
-        << " tid = "   << getThreadID()
+        << "] std::thread::id =  "  << std::this_thread::get_id()
+        << " sys tid = "   << getThreadID()
         << " iter = "  << i
         << "\n";
-    if (!logger.writeLine(oss.str())) {
-	std::cerr << "logger.writeLine failed/n"; }
+    logger.writeLine(oss.str()); }
+  prom.set_value("thread " + args.tag + " done, iterations = " + std::to_string(COUNT_ITERATIONS));
 
     // imitation of useful work
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
-  }
+ 
 }

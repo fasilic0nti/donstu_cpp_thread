@@ -1,9 +1,11 @@
+#include <future>
 #include <iostream>
 #include <vector>
 #include <thread>
 #include <sstream>
 #include "threadfuncs.h"
 #include <unistd.h>
+
 int main() {
   std::thread::id a = std::this_thread::get_id();
   std::thread::id b = std::this_thread::get_id();
@@ -29,16 +31,22 @@ int main() {
 
   // thread are starting
   std::vector<std::thread> threads;
+  std::vector<std::future<std::string>> futures;
   threads.reserve(COUNT_THREADS);
+  futures.reserve(COUNT_THREADS);
 
   for (int i = 0; i < COUNT_THREADS; ++i) {
-    threads.emplace_back(funcThread, std::cref(args[i]), std::ref(logger));
+    std::promise<std::string> prom;
+    futures.push_back(prom.get_future());
+    threads.emplace_back(funcThread, std::cref(args[i]), std::ref(logger), std::move(prom));
   }
 
   // wait for stop all threads
   for (auto& t : threads) {
     if (t.joinable()) t.join();
   }
+
+  logger.writeLine("counter = " + std::to_string(counter));
 
   // close file automatically
   std::cout << "main: all threads finished, file closed\n";
