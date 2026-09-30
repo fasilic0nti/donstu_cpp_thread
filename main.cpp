@@ -3,20 +3,21 @@
 #include <thread>
 #include <sstream>
 #include "threadfuncs.h"
-
+#include <unistd.h>
 int main() {
   std::thread::id a = std::this_thread::get_id();
   std::thread::id b = std::this_thread::get_id();
-  bool same = (a == b)
+  bool same = (a == b);
   about();
 
   // Open log file
   Logger logger("output.log");
 
-  std::ostringstream oss;
-  oss << "main: tid= " << getThreadID() <<", opened file: 'output.log'";
+  std::ostringstream oss; 
+  oss << "main: pid = " << ::getpid() << ", tid = " << getThreadID() <<", opened file: 'output.log'";
   logger.writeLine(oss.str());
-  logger.writeLine("main: all threads finished, file closed");
+
+  
 
   // args for threads
   std::vector<ThreadArgs> args(COUNT_THREADS);
