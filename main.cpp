@@ -40,6 +40,7 @@ int main() {
     futures.push_back(prom.get_future());
     threads.emplace_back(funcThread, std::cref(args[i]), std::ref(logger), std::move(prom));
   }
+ 
 
   // wait for stop all threads
   for (auto& t : threads) {
