@@ -9,7 +9,7 @@
 int main() {
   std::thread::id a = std::this_thread::get_id();
   std::thread::id b = std::this_thread::get_id();
-  bool same = (a == b);
+  if (a == b) {std::cout <<" Equal\n";}
   about();
 
   // Open log file
